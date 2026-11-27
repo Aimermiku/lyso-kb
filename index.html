@@ -1,0 +1,615 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>溶酶体离子通道 · 复习知识库</title>
+<style>
+  :root{
+    --bg:#0e1117; --panel:#151a22; --card:#171d26; --line:rgba(255,255,255,.09);
+    --txt:#e8ecf3; --dim:#8d97a8; --accent:#7fd1ff;
+    --red:#ff8a80; --amber:#ffd479; --green:#8fd6a8;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; background:var(--bg); color:var(--txt);
+    font:15px/1.7 -apple-system,"Segoe UI","Microsoft YaHei",system-ui,sans-serif;
+  }
+  a{color:var(--accent)}
+  header{
+    position:sticky; top:0; z-index:20; background:rgba(14,17,23,.92);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--line);
+    padding:14px 22px 0;
+  }
+  .head-row{display:flex; align-items:center; gap:16px; flex-wrap:wrap}
+  h1{font-size:19px; margin:0; font-weight:600; letter-spacing:.2px}
+  .sub{color:var(--dim); font-size:12.5px}
+  .modes{display:flex; gap:6px; margin-left:auto}
+  .mode{
+    border:1px solid var(--line); background:transparent; color:var(--dim);
+    padding:6px 13px; border-radius:8px; cursor:pointer; font-size:13.5px;
+  }
+  .mode:hover{color:var(--txt); border-color:rgba(255,255,255,.2)}
+  .mode.on{background:rgba(127,209,255,.14); color:var(--accent); border-color:rgba(127,209,255,.4)}
+  .tools{display:flex; gap:10px; align-items:center; padding:12px 0; flex-wrap:wrap}
+  input[type=search], input[type=text], textarea, select{
+    background:var(--panel); border:1px solid var(--line); color:var(--txt);
+    border-radius:8px; padding:8px 11px; font:inherit; font-size:14px; outline:none;
+  }
+  input[type=search]{width:280px}
+  input[type=search]:focus, input[type=text]:focus, textarea:focus{border-color:rgba(127,209,255,.45)}
+  .chips{display:flex; gap:6px; flex-wrap:wrap}
+  .chip{
+    border:1px solid var(--line); border-radius:20px; padding:3px 11px;
+    font-size:12.5px; color:var(--dim); cursor:pointer; background:transparent;
+  }
+  .chip.on{color:var(--accent); border-color:rgba(127,209,255,.45); background:rgba(127,209,255,.1)}
+  main{padding:20px 22px 80px; max-width:1280px; margin:0 auto}
+  .grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(330px,1fr)); gap:14px}
+  .card{
+    background:var(--card); border:1px solid var(--line); border-radius:12px;
+    padding:15px 16px 13px; display:flex; flex-direction:column; gap:8px;
+  }
+  .card-top{display:flex; align-items:flex-start; gap:8px}
+  .term{font-size:15.5px; font-weight:600; line-height:1.4}
+  .badge{
+    font-size:11px; padding:1px 7px; border-radius:5px; color:var(--dim);
+    border:1px solid var(--line); white-space:nowrap; margin-left:auto;
+  }
+  .short{color:#cfd6e2; font-size:13.8px}
+  .detail{color:var(--dim); font-size:13px; display:none; border-top:1px dashed var(--line); padding-top:8px; margin-top:2px}
+  .card.open .detail{display:block}
+  .card-foot{display:flex; align-items:center; gap:10px; margin-top:auto; font-size:11.5px; color:#6f7888}
+  .src{margin-left:auto}
+  .toggle{background:none; border:none; color:var(--dim); cursor:pointer; font-size:12px; padding:0}
+  .toggle:hover{color:var(--accent)}
+  .del{background:none; border:none; color:#7b5b5b; cursor:pointer; font-size:12px; padding:0}
+  .del:hover{color:var(--red)}
+
+  /* review */
+  .review-wrap{max-width:780px; margin:0 auto}
+  .progress{color:var(--dim); font-size:12.5px; display:flex; justify-content:space-between; margin-bottom:12px}
+  .flash{
+    background:var(--card); border:1px solid var(--line); border-radius:14px;
+    padding:30px 30px 26px; min-height:280px; display:flex; flex-direction:column; gap:16px;
+  }
+  .flash .q{font-size:22px; font-weight:600; line-height:1.45}
+  .flash .q small{display:block; font-size:12.5px; color:var(--dim); font-weight:400; margin-top:8px}
+  .flash .a{border-top:1px solid var(--line); padding-top:16px; display:none}
+  .flash.revealed .a{display:block}
+  .flash .a p{margin:0 0 10px; font-size:14.5px}
+  .flash .a .dd{color:var(--dim); font-size:13.2px}
+  .flash .a .pp{color:#6f7888; font-size:11.5px}
+  .acts{display:flex; gap:10px; flex-wrap:wrap}
+  .btn{border:1px solid var(--line); background:var(--panel); color:var(--txt);
+    padding:9px 18px; border-radius:9px; cursor:pointer; font:inherit; font-size:14px}
+  .btn:hover{border-color:rgba(255,255,255,.25)}
+  .btn.primary{background:rgba(127,209,255,.16); border-color:rgba(127,209,255,.45); color:var(--accent)}
+  .btn.g1{border-color:rgba(255,138,128,.4); color:var(--red)}
+  .btn.g2{border-color:rgba(255,212,121,.4); color:var(--amber)}
+  .btn.g3{border-color:rgba(143,214,168,.4); color:var(--green)}
+  .hintline{color:#6f7888; font-size:12px; margin-top:12px}
+
+  /* add form */
+  .form{max-width:720px; display:grid; gap:12px}
+  .form label{font-size:12.5px; color:var(--dim); display:block; margin-bottom:5px}
+  .form textarea{min-height:92px; resize:vertical; width:100%}
+  .form input[type=text]{width:100%}
+  .form .row2{display:grid; grid-template-columns:1fr 200px; gap:12px}
+
+  /* data */
+  .data{max-width:720px; display:grid; gap:16px}
+  .panel{background:var(--card); border:1px solid var(--line); border-radius:12px; padding:18px 20px}
+  .panel h3{margin:0 0 6px; font-size:15px}
+  .panel p{margin:0 0 12px; color:var(--dim); font-size:13px}
+  .stats{display:flex; gap:26px; flex-wrap:wrap}
+  .stat b{display:block; font-size:22px; color:var(--accent)}
+  .stat span{font-size:12px; color:var(--dim)}
+  .toast{position:fixed; left:50%; bottom:28px; transform:translateX(-50%);
+    background:rgba(127,209,255,.16); border:1px solid rgba(127,209,255,.4); color:var(--accent);
+    padding:8px 16px; border-radius:9px; font-size:13px; opacity:0; transition:.25s; pointer-events:none}
+  .toast.on{opacity:1}
+  .empty{color:var(--dim); text-align:center; padding:60px 0}
+  @media(max-width:640px){
+    input[type=search]{width:100%}
+    .modes{width:100%; margin-left:0}
+    main{padding:16px}
+    .grid{grid-template-columns:1fr}
+  }
+</style>
+</head>
+<body>
+<header>
+  <div class="head-row">
+    <div>
+      <h1>溶酶体离子通道 · 复习知识库</h1>
+      <div class="sub">内置两篇：Li, Gu &amp; Xu, <i>TiBS</i> 2019 + Hu, Li 等, <i>Cell</i> 2022 的 63 张卡片（含术语与 2022 修正）· 可继续添加自己的主题 · 本地存储，离线可用</div>
+    </div>
+    <div class="modes">
+      <button class="mode on" data-mode="browse">浏览</button>
+      <button class="mode" data-mode="review">复习</button>
+      <button class="mode" data-mode="add">新增</button>
+      <button class="mode" data-mode="data">数据</button>
+    </div>
+  </div>
+  <div class="tools" id="tools">
+    <input type="search" id="q" placeholder="搜索术语、释义、细节或标签…">
+    <div class="chips" id="chips"></div>
+    <div class="sub" id="count" style="margin-left:auto"></div>
+  </div>
+</header>
+<main>
+  <div id="view"></div>
+</main>
+<div class="toast" id="toast"></div>
+
+<script>
+const KEY='lyso_kb_v1';
+const IV=[1,2,4,7,15];              // 复习间隔（天），按掌握层级
+const CATS=['图形','通道','信号','疾病','方法','概念','术语','修正'];
+
+/* ---------- 种子卡片 ---------- */
+const SEED=[
+/* 图形 */
+{c:'图形',t:'图1｜溶酶体功能全景',s:'一张图说清"降解站+信号枢纽"。',
+ d:'读法：中间紫色大圆是溶酶体降解中心；左侧四条输入（内吞成熟、自噬、线粒体自噬、细胞器物质交换）；黑点分解产物经 exporter、囊泡运输、胞吐或膜接触位点排出；右上是质膜修复与溶酶体膜自我修复。下半部是调控：营养充足时 mTOR 在溶酶体表面激活 S6K，饥饿时 mTOR 离开、TFEB 去磷酸化进核启动溶酶体生成。全图黄点 Ca²⁺ 是贯穿的调度信号。',
+ p:'p111',g:['总览','mTOR','TFEB','胞吐']},
+{c:'图形',t:'图2｜单个溶酶体的离子与通道',s:'腔内高 Ca 高 Na 低 K，膜上泵阀成对出现。',
+ d:'腔内：Ca 0.5 mM、Na 100±20 mM、K 10±5 mM、H 25 μM（pH 4.6）、Cl 60 mM、ΔΨ≈0±20 mV。胞质：K 150 mM、Na 12 mM、Ca 100 nM、H 40 nM、Cl 25±15 mM。膜上：V-ATPase 泵 H⁺，TRPMLs 出 Ca/Na，TPCs 出 Na，P2X4 由腔内 ATP 打开，TMEM175 与 BK 走 K，SLC38A9 感受精氨酸，NPC1 转胆固醇；LysoH 与 LysoCl 是尚未鉴定分子身份的漏电导。',
+ p:'p113',g:['离子梯度','V-ATPase','TRPML','TPC']},
+{c:'图形',t:'图3｜膜电位怎样被改写',s:'ΔΨ 平时贴着 0，刺激时出现 ±50 mV 尖峰。',
+ d:'上半部三条记录：Na⁺ 或 H⁺ 通道打开→正向尖峰（去极化约 +50 mV）；K⁺ 通道打开→负向尖峰（超极化约 −50 mV）。尖峰冲上去很快回落，不是持久台阶。中部两张膜图把这个逻辑画实：去极化靠 Na/H，超极化靠 K，且超极化会加大 Ca²⁺ 释放驱动力（BK 正反馈的基础）。下半部 B 比较大小溶酶体：大者峰更高更久，因为腔内离子被抽稀得慢。',
+ p:'p115',g:['膜电位','去极化','超极化','尺寸']},
+{c:'图形',t:'图4｜结构解释门控',s:'两种激动剂从不同口袋开同一扇门。',
+ d:'A：TRPML1 四聚体俯视，绿点=ML-SA1 结合位点（S5–S6 上方疏水口袋），红/橙=PI(3,5)P₂ 结合位点（N 端 S1–S3 附近）；卡通显示两条独立开门路径：ML-SA1 直接开，PI(3,5)P₂ 经 S2–S3 linker 拉动 S6 门。B：TPC2 二聚体，PI(3,5)P₂ 结合在 S4–S5 linker 与 S6，结合后 IS5–IS6 内螺旋张开。结论：同一通道可被多个信号从不同位点激活，必须用位点特异性突变才能分离功能。',
+ p:'p118',g:['结构','ML-SA1','PI(3,5)P2','门控']},
+
+/* 通道 */
+{c:'通道',t:'TRPML1–3',s:'粘脂素型 TRP 通道，溶酶体主 Ca²⁺ 出口。',
+ d:'六次跨膜四聚体，由双亮氨酸基序定位到晚期内体/溶酶体。TRPML1 全身表达、研究最透；TRPML2/3 表达受限。可通透 Ca²⁺、Na⁺、K⁺ 及 Fe²⁺/Zn²⁺。TRPML1 缺失导致 IV 型黏脂贮积症。激动剂：PI(3,5)P₂、ROS；抑制剂：PI(4,5)P₂、鞘磷脂、腺苷、mTOR 磷酸化。',
+ p:'p117',g:['Ca通道','ML-IV','定位']},
+{c:'通道',t:'TPC1 / TPC2',s:'双孔通道，本文定性为 Na⁺ 选择性、主要改写 ΔΨ。',
+ d:'二聚体 12 次跨膜，经双亮氨酸基序定位。PNa/PCa>10、PNa/PK>60，PI(3,5)P₂ 门控，受胞质 ATP/mTOR 调制。功能：氨基酸外排、腔内 pH 稳态、自噬调控、内体—ER 膜接触。争议点：领域内长期认为它是 NAADP 依赖的 Ca²⁺ 释放通道，本文明确否认，且关键否定证据未发表。',
+ p:'p119–120',g:['Na通道','膜电位','争议']},
+{c:'通道',t:'P2X4',s:'腔内 ATP 打开、酸性 pH 抑制的阳离子通道。',
+ d:'三聚体两次跨膜，同时定位在溶酶体与质膜，靠双亮氨酸+酪氨酸基序定位。由腔内 ATP 激活，被酸性 pH 抑制；激活后经钙调蛋白驱动同型溶酶体融合。悖论：它的工作环境 pH 4.6，长期处于被抑制状态，生理贡献可能远小于体外所见。',
+ p:'p120',g:['ATP','融合','悖论']},
+{c:'通道',t:'TMEM175',s:'离子的"身份"随 pH 变：pH>7 时是 K⁺ 通道，pH 4.6 时是质子通道（2022 修正）。',
+ d:'二聚体 12 次跨膜，用 FSD 而非 GYG 基序。2015 年结论（pH>7 条件下）：K⁺ 选择性、PK/PNa>30、组成性背景电导、维持静息 ΔΨ、电流很小多数溶酶体测不到。2022 年同一实验室修正：生理 pH 4.5–5.0 下改为质子选择性（PH/PK≈4.8×10⁴，>90% 电流由 H⁺ 承载），被腔侧质子门控、基础活性极低；缺失导致溶酶体过酸化而非碱化，K⁺ 反离子模型不成立。GWAS 将其与帕金森病关联。',
+ p:'p121；Cell 2022 p2293–2304',g:['K通道','质子通道','帕金森','2022修正']},
+{c:'通道',t:'BK / LysoKVCa',s:'大电导钙激活钾通道，Ca²⁺ 释放的正反馈放大器。',
+ d:'四聚体，电压与 Ca²⁺ 双重激活。溶酶体上的版本称 LysoKVCa，单个通道开放即可显著改变 ΔΨ。机制：超极化→增大 Ca²⁺ 释放驱动力→更多 Ca²⁺→通道更开（正反馈）；并参与 Ca²⁺ 库再充盈。BK 激动剂在多种 LSD 成纤维细胞中减少贮积。',
+ p:'p121',g:['K通道','正反馈','再充盈']},
+{c:'通道',t:'V-ATPase',s:'质子泵，把溶酶体酸化成 pH 4.6。',
+ d:'多亚基旋转泵，在内体成熟过程中逐步酸化至平台值 pHL 4.6。它也参与 mTORC1 感知腔内氨基酸（"由内而外"机制）。酸化需要 Cl⁻ 等阴离子作反离子。',
+ p:'p113',g:['酸化','pH','mTOR']},
+
+/* 信号 */
+{c:'信号',t:'PI(3,5)P₂',s:'晚期内体/溶酶体专属脂质，天然"地址码"。',
+ d:'由 PIKfyve 合成、OCRL 等去磷酸化。它直接结合 TRPML 与 TPC 的胞质侧正电荷残基打开通道，结合位点已由高分辨率结构确证。抑制其合成会造成类似 ML-IV 的运输缺陷。关键细节：氨基酸饥饿时其水平显著下降。',
+ p:'p117',g:['脂质','地址码','TRPML','TPC']},
+{c:'信号',t:'PI(4,5)P₂',s:'TRPML1 的抑制剂，也在溶酶体上参与再形成。',
+ d:'主要位于质膜，本文指出它在溶酶体膜上生成并调控 mTOR 依赖的溶酶体再形成，同时抑制 TRPML1——同一脂质既是"再形成"的信号又是 Ca²⁺ 通道的刹车。某些 LSD 细胞中其水平异常升高。',
+ p:'p119',g:['脂质','抑制','再形成']},
+{c:'信号',t:'ROS → TRPML1 → TFEB',s:'一条可验证的信号链。',
+ d:'线粒体损伤产生 ROS，ROS 直接激活 TRPML1，Ca²⁺ 释放促使 TFEB 去磷酸化进核，启动自噬体与溶酶体生成，形成清除受损线粒体的负反馈。ROS 敏感性是否为生理主通路，仍需位点特异性 knock-in 验证。',
+ p:'p117',g:['ROS','TFEB','自噬']},
+{c:'信号',t:'mTORC1 与营养感知',s:'溶酶体是营养感知的物理平台。',
+ d:'mTORC1 锚在溶酶体膜，与 Rag/Rheb、V-ATPase、SLC38A9 组成复合物，同时感知腔内与胞质氨基酸池。饥饿时解离，蛋白合成停、自噬升；同时 mTOR 可磷酸化抑制 TRPML1，也可调制 TPC2。',
+ p:'p112、p117',g:['营养','mTOR','自噬']},
+{c:'信号',t:'TFEB',s:'溶酶体生成的"总开关"转录因子。',
+ d:'磷酸化状态留在胞质，去磷酸化后进核，启动溶酶体生物发生相关基因。被 Ca²⁺（经钙调磷酸酶）与 ROS 通路激活，是溶酶体适应与清除能力的转录层保障。',
+ p:'p112',g:['转录','生物发生','Ca']},
+{c:'信号',t:'NAADP 争议',s:'曾被当作溶酶体 Ca²⁺ 信使，本文否认。',
+ d:'早期认为 NAADP 经 TPC 触发内体/溶酶体 Ca²⁺ 释放。本文立场：TPC 是 PI(3,5)P₂ 激活的 Na⁺ 通道，NAADP 不是直接激动剂；标志性证据是 Ned-19 几乎不阻断全溶酶体 TPC 电流，以及鞘氨醇在直接记录中未能激活 TPC——但这两条依赖"X. Zhang and H. Xu, unpublished"。',
+ p:'p119–120',g:['NAADP','争议','未发表']},
+{c:'信号',t:'ΔΨ（溶酶体膜电位）',s:'由 H⁺/Na⁺/K⁺ 相对通透性决定的电位差。',
+ d:'定义：ΔΨ = 胞质电位 − 腔电位。静息时因通道几乎未被环境信号激活，围绕 0 mV 波动（±20 mV）；刺激时随通道开放瞬时摆到 ±50 mV。文献实测值分散：吞噬溶酶体 −19 mV，vacuolin 放大溶酶体 +20 mV。作者主张生理真值在 0 附近。',
+ p:'p114–115',g:['膜电位','静息','测量']},
+
+/* 概念 */
+{c:'概念',t:'解码器框架',s:'通道=把细胞信号翻译成两种输出。',
+ d:'输入（PI(3,5)P₂、ROS、pH、ATP、营养状态）→ 通道（选择性+脂质门控+pH 门控）→ 输出（化学：腔内 Ca²⁺ 释放；电学：ΔΨ 变化）→ 功能（运输、外排、修复、TFEB、融合）。框架的解释力在于把"通道很多、功能很多"的罗列变成有分工的回路。',
+ p:'p110、p115',g:['框架','核心']},
+{c:'概念',t:'双输出分工',s:'Ca²⁺ 管触发，ΔΨ 管驱动力与门控。',
+ d:'Ca²⁺ 输出幅度型、由库存限制；ΔΨ 输出门控型、由表面电荷决定。两者时间尺度不同：电位改变只需要约 10³ 个电荷（亚毫秒），体相浓度改变需要 10⁵ 量级离子。混为一谈会削弱论证精确性，但不影响"静息≈0 mV"的大方向。',
+ p:'p114–115、我的分析',g:['框架','定量']},
+{c:'概念',t:'地址码（位置特异性）',s:'信号的"在哪发出"由器官专属脂质+局部 pH 编码。',
+ d:'PI(3,5)P₂ 只在晚期内体/溶酶体上富集，通道对它的依赖等于把定位写进门控逻辑；再叠加腔内酸性 pH 的门控，位置特异性比分子特异性更可靠。做合成生物学信号回路时，这是比"专用配体"更鲁棒的策略。',
+ p:'p117、p119、我的推断',g:['框架','工程']},
+{c:'概念',t:'离子库存与通量估算',s:'作者用物理约束给 ΔΨ 划定取值区间。',
+ d:'0.3 μm 溶酶体腔体积约 1.4×10⁻¹⁷ L：Na⁺ 8.5×10⁵、K⁺ 8.5×10⁴、H⁺ 仅 210（原文 9×10⁵/9×10⁴/200）。10 个通道、10 pS、0.1 开放概率、10 mV 驱动下约 624 个离子/ms（原文 600）。由此论证通道一开就抽干库存，故 ΔΨ 只能瞬变。',
+ p:'p114',g:['定量','复算']},
+{c:'概念',t:'我的修正：电位≠浓度',s:'两个不同时间尺度被混在一起。',
+ d:'按 624 个离子/ms，Na⁺ 体相耗竭需约 1.4 秒而非毫秒；毫秒级只对 H⁺（0.35 ms）与 Ca²⁺（约 4×10³ 个）成立。另一方面膜电容约 2.8 fF，改变 50 mV 只需约 880 个单价电荷——电位变化几乎不消耗库存。正确表述：ΔΨ 瞬变在电学上"便宜"，Ca²⁺ 释放幅度受库存限制。',
+ p:'我的复算（基于 p114 参数）',g:['定量','批判']},
+{c:'概念',t:'异质性假说',s:'每个溶酶体"不一样"，因为装的东西不一样。',
+ d:'静息状态下同细胞内溶酶体在初级/次级、内体/自噬溶酶体、酸化/中性、核周/外周等维度上高度不同步。作者提出（propose，非结论）：这种差异反映货物与分解产物含量不同，以及由此招募的换能器与效应器不同。可直接检验：单溶酶体货物负荷与 Ca²⁺ 释放能力的相关性。',
+ p:'p113',g:['假说','异质性']},
+{c:'概念',t:'尺寸—时间耦合',s:'大溶酶体的 ΔΨ 响应更大更久。',
+ d:'Fig 3B：同样刺激下大溶酶体峰更高、持续时间更长，因为腔内离子组成的相对变化更小（"惯性"更大）。方法学张力：本文主要电生理证据来自 vacuolin 放大囊泡，若尺寸真的重要，这些测量本身就不能代表天然 100–500 nm 的溶酶体。',
+ p:'p115',g:['尺寸','方法学']},
+{c:'概念',t:'综述的三处跳步',s:'必要≠充分、通道≠解码、细胞≠治疗。',
+ d:'① 从"通道在溶酶体上"到"解码特定信号"依赖敲除与药理扰动，而 Ned-19 等工具的专属性本身不可靠；② ML-SA 激活足以触发功能，但"内源信号经同一通道"仍靠功能丧失反推；③ 从患者成纤维细胞表型直接推到"可治疗 LSD"，跨过剂量、选择性、毒性与在体疗效。',
+ p:'p119–122',g:['批判','证据']},
+
+/* 疾病 */
+{c:'疾病',t:'ML-IV（IV 型黏脂贮积症）',s:'TRPML1 功能缺失所致的 LSD。',
+ d:'患者出现神经退行与肌营养不良，常无法行走与言语；因溶酶体运输缺陷，未降解物与脂褐素在溶酶体中堆积。小分子 TRPML1 激动剂可部分恢复患者成纤维细胞的溶酶体功能。',
+ p:'p117、p121',g:['LSD','TRPML1']},
+{c:'疾病',t:'NPC（尼曼–匹克 C 型）',s:'NPC1 突变导致的胆固醇/鞘脂贮积。',
+ d:'NPC1 是溶酶体胆固醇转运体，突变致病。过量鞘磷脂堆积会抑制 TRPML1，造成运输缺陷；TRPML1 过表达或 ML-SA 可促进 NPC 细胞的胆固醇清除。',
+ p:'p121–122',g:['LSD','胆固醇']},
+{c:'疾病',t:'帕金森病与溶酶体通道',s:'TMEM175 与 TPC2 都牵涉其中。',
+ d:'GWAS 把 TMEM175 与 PD 风险关联，其缺失神经元易累积 α-突触核蛋白；LRRK2 突变造成的溶酶体形态缺陷可被 TPC2 抑制缓解。AD 方面则与 TRPML1 信号受损相关。',
+ p:'p122',g:['PD','AD','GWAS']},
+{c:'疾病',t:'LSD 的共同逻辑',s:'原发贮积→继发贮积→恶性循环。',
+ d:'水解酶缺陷造成原发性贮积，进而损害溶酶体功能（运输、外排、修复），产生继发性贮积，形成正反馈。因此"恢复通道活性以促进清除"成为跨疾病的通用策略假说——但目前只有细胞水平证据。',
+ p:'p121–122',g:['LSD','治疗']},
+
+/* 方法 */
+{c:'方法',t:'whole-endolysosome patch-clamp',s:'直接记录单个细胞器的膜电流。',
+ d:'把溶酶体/内体放大后膜片钳记录，是鉴定溶酶体通道的决定性手段：能测电流、电导、选择性、门控。局限：必须用 vacuolin 等放大囊泡，腔内离子组成与天然细胞器不同，且小电流（如 TMEM175）常测不到。',
+ p:'p114、p121',g:['电生理','方法']},
+{c:'方法',t:'位点特异性 knock-in',s:'分离同一通道的不同激动剂通路。',
+ d:'当通道被多个信号激活（如 TRPML1 同时受 PI(3,5)P₂ 与 ROS），在各自结合位点做突变，可把"哪个信号负责哪个功能"分开。这是本文反复给出的方法学建议，也是解决"饥饿时 PI(3,5)P₂ 降、mTOR 抑"方向矛盾的关键。',
+ p:'p117、p120',g:['遗传学','方法']},
+{c:'方法',t:'合成调节剂与其局限',s:'ML-SA/ML-SI、Ned-19、四氢帕马丁。',
+ d:'ML-SA 系列结合 S5–S6 上方疏水口袋，可急性激活 TRPML 而不影响其他溶酶体通道，是连接"通道活性"与"具体功能"的有力工具。反例：Ned-19 被广泛用于论证 NAADP/TPC 通路，却被本文指出几乎不阻断 TPC 电流——工具专属性不足会让整条证据链打折。',
+ p:'p119–120',g:['药理','工具','批判']},
+{c:'方法',t:'真空泵放大与"测不到"',s:'阴性结果不等于没有该通道。',
+ d:'TMEM175 电流在多数分离溶酶体上测不到，作者解释为"可能被特定信号增强"。审读时要区分三件事：论文未报告、当前材料未提供、方法确实没有执行——三者结论完全不同。',
+ p:'p121、p123（Outstanding Questions）',g:['方法学','判读']},
+
+/* ---------- 术语（来自 Cell 2022，按你的要求自动入库） ---------- */
+{c:'术语',t:'LyPAP / I_LyPAP',s:'作者给“天然溶酶体质子电流”的命名。',
+ d:'Lysosomal proton-activated, proton-permeant channel。pH_L 4.6 时多数溶酶体只有 <5 pA 的微弱电流（31/128），降到 3.5 时全部 >100 pA；既是电流的名字，后来也直接指 TMEM175 本身。考试/写作时注意：LyPAP 是“电导表型”，TMEM175 是“分子身份”，两者不能互相替换。',
+ p:'Cell 2022 p2293–2294',g:['命名','质子通道']},
+{c:'术语',t:'LEL 与 EE',s:'晚期内体/溶酶体 vs 早期内体。',
+ d:'LEL = late endosome and lysosome，pH 4.5–5.0，本文所有天然膜记录的对象；EE = early endosome，pH 约 5.5–6.5，用 wortmannin + latrunculin B 放大后可记录（Fig S1F 也测到较小电流）。记住二者 pH 不同，这正是“同一通道在不同细胞器可能不同身份”的来源。',
+ p:'Cell 2022 p2293–2294',g:['细胞器','pH']},
+{c:'术语',t:'pH_L / pH_E / pH_C / pH_i',s:'四个 pH 下标的区别。',
+ d:'pH_L：腔内；pH_E：胞外（质膜外侧，拓扑上等价于腔内）；pH_C：胞质；pH_i：细胞内（本文多指胞质）。全细胞记录里常写 pH_E/L，意思是“这个 pH 对质膜通道是胞外、对溶酶体通道相当于腔内”。读图时先确认下标，否则会把“腔侧激活”误读成“胞质激活”。',
+ p:'Cell 2022 p2295',g:['记号','读图']},
+{c:'术语',t:'E_rev（反转电位）',s:'判断“这个通道认谁”的第一把尺。',
+ d:'电流方向翻转时的膜电位。两侧同离子浓度 → E_rev≈0；质子选择性通道在 ΔpH 下 E_rev 随 pH 线性漂移（本文 −53 mV/pH）。测 E_rev 比测电流幅度更可靠，因为幅度受通道数量影响，E_rev 只取决于相对通透性。',
+ p:'Cell 2022 p2295',g:['电生理','选择性']},
+{c:'术语',t:'GHK 方程与 P_H/P_X',s:'由 E_rev 反推相对通透性。',
+ d:'Goldman-Hodgkin-Katz：在“双离子”条件下用 E_rev 算 P_H/P_X。本文得 P_H/P_K=48,000±2,000、P_H/P_Na 与 P_H/P_NMDG >200,000。注意 bi-ionic 是“宽松说法”——[H⁺] 比 [Na⁺]/[K⁺] 低几个数量级，所以严格说不是真正的双离子体系。',
+ p:'Cell 2022 p2295、e5–e6',g:['定量','选择性']},
+{c:'术语',t:'NMDG⁺ / MSA⁻',s:'“占位不导电”的大离子。',
+ d:'N-methyl-D-glucamine（大阳离子）+ methanesulfonate（大阴离子）。把 Na⁺/K⁺/Ca²⁺/Cl⁻ 全换掉，只留 H⁺ 能导电，才能把质子电流从背景里分离出来。副作用：必须补 2 mM Cl⁻ 才能让 Ag/AgCl 电极稳定工作；撤掉 Cl⁻ 还是为了防 H⁺ 激活的 Cl⁻ 电流。',
+ p:'Cell 2022 e5',g:['溶液','方法']},
+{c:'术语',t:'TEA⁺',s:'压背景 K⁺ 通道的季铵盐。',
+ d:'tetraethylammonium。在全细胞记录里加 10 mM，用来减少 HEK293T 质膜上内源 K⁺ 电流对 P_K 的污染。作者自己提示：阻断不完全，会让 P_H/P_K 被低估——这是“有利于结论”的偏差，但仍属偏差。',
+ p:'Cell 2022 e5',g:['药理','对照']},
+{c:'术语',t:'ArA（花生四烯酸）',s:'内源性通道激动剂，给通道一个“非 pH 旋钮”。',
+ d:'Arachidonic acid，多不饱和脂肪酸。本文用 100–400 µM，可放大 I_LyPAP 与 TMEM175 电流，并让溶酶体去酸化（pHrodo Green/CF555 双染料可见）。意义：说明通道不只被 pH 控制，脂质信号可以改变 pH 设定点。注意浓度远高于常见胞内自由浓度，属“药理剂量”。',
+ p:'Cell 2022 p2297、p2301',g:['脂质','激动剂']},
+{c:'术语',t:'DCPIB',s:'原 VRAC 抑制剂，其实是 TMEM175 的强激活剂。',
+ d:'50–100 µM 可激活 TMEM175 的 H⁺ 与 K⁺ 电流，幅度 >100 倍。双重身份是本文最需要小心的地方：作者用 LRRC8A（VRAC 组分）KO 细胞做排他——DCPIB 仍能让溶酶体碱化，但在 TMEM175 KO 中不行，说明效应经 TMEM175。工具药“兼职”是药理学证据最常见的坑。',
+ p:'Cell 2022 p2297–2301、Fig S7C–D',g:['药理','对照','工具']},
+{c:'术语',t:'ML 67-33 与 SC-79',s:'两个“ borrowed”小分子：一个真激活，一个被否定。',
+ d:'ML 67-33 原是 K2P 通道激活剂，本文发现也激活 TMEM175；SC-79 是 AKT 激活剂，有文献称它能激活溶酶体 TMEM175，本文在 10–100 µM、10 分钟条件下测不到任何电流增加，且 AKT 抑制剂不影响 DCPIB 效应，故否定（措辞限定 in our hands）。负结果只能证伪特定条件。',
+ p:'Cell 2022 p2297、Fig S5',g:['药理','负结果']},
+{c:'术语',t:'Baf-A1（巴弗洛霉素 A1）',s:'V-ATPase 抑制剂，两种剂量两种用途。',
+ d:'1 µM 完全阻断质子泵，用于“阳性对照”（全部碱化）；1 nM 只轻抑制，用来把 KO 细胞的过酸化“校准”回正常——这一步是本文证明“pH 是中介变量”的关键干预（酶活性随之恢复）。看图时先确认剂量，1 nM 与 1 µM 的含义完全不同。',
+ p:'Cell 2022 p2300–2302',g:['药理','干预']},
+{c:'术语',t:'GPN',s:'用来“放掉”溶酶体 H⁺ 梯度的对照试剂。',
+ d:'glycyl-L-phenylalanine 2-naphthylamide，被溶酶体酶切后产生渗透性产物，使溶酶体破裂/梯度耗散。本文用它做关键排除：GPN 预处理后 DCPIB 引起的胞质酸化消失 → 说明酸来自溶酶体腔，不是胞外流入。',
+ p:'Cell 2022 p2300',g:['对照','溶酶体']},
+{c:'术语',t:'pHluorin / pHrodo',s:'两种 pH 探针，方向相反。',
+ d:'pHluorin 是基因编码探针，越酸越暗（测胞质 pH，配 mCherry 定位）；pHrodo 是化学探针，越酸越亮（Red 测胞质、Green Dextran 测腔内）。记忆法：luorin“亮→灭”，rodo“暗→亮”。两者并用可交叉验证同一结论。',
+ p:'Cell 2022 p2296、p2301',g:['探针','pH']},
+{c:'术语',t:'LysoTracker / LysoSensor / Oregon Green Dextran',s:'三档精度：半定量、比率、绝对 pH。',
+ d:'LysoTracker Red 只是“越酸越亮”的半定量（Fig 6A）；LysoSensor Yellow/Blue 是双激发比率；Oregon Green 488 Dextran 可用 valinomycin + nigericin 建标准曲线，给出绝对 pH。本文用三者交叉，才敢说 KO 只酸 0.3 个单位（d≈0.87）。单用 LysoTracker 不足以支持“0.3 pH”这种精度。',
+ p:'Cell 2022 p2302、e7',g:['染料','定量']},
+{c:'术语',t:'vacuolin-1 与 whole-LEL',s:'把溶酶体吹大才能做膜片钳。',
+ d:'vacuolin-1 处理 1–12 h 选择性增大 LEL，手动分离后在玻璃电极上打穿膜，记录“整颗细胞器”。优点：唯一能记录天然膜的手段；代价：膜面积、腔体积、缓冲能力、通道密度都被改变。读本文时要记住这个平台与“生理条件”论之间的张力。',
+ p:'Cell 2022 e6',g:['方法','局限']},
+{c:'术语',t:'Cathepsin B/D 与三个底物',s:'溶酶体“消化能力”的读出。',
+ d:'Cathepsin B 用 Magic Red（荧光底物，活性越高越亮）；Cathepsin D 用 Pepstatin A-BODIPY（只标有活性的酶）；总体水解活性用 DQ-BSA（自淬灭，被切开才发亮）。本文 KO 中三者都降，且蛋白酶总量不变——所以是“酶不工作”，不是“酶变少”。',
+ p:'Cell 2022 p2302、Fig S7N',g:['蛋白酶','读出']},
+{c:'术语',t:'pff 与 p-S129 α-syn',s:'在体 PD 病理的标准组合。',
+ d:'pff = preformed fibrils，重组 α-synuclein 预成形纤维，单次注射纹状体（2.5 µL，2 mg/mL，3–4 月龄小鼠），30 天后看磷酸化 S129（致病形式的标志）。本文 KO 小鼠斑点面积约 3 倍、数量约 2.5 倍。局限：单一时间点、单一剂量、免疫组化半定量。',
+ p:'Cell 2022 p2303、e8',g:['在体','PD']},
+{c:'术语',t:'离子通道“邻居”速查',s:'六个容易混的名字。',
+ d:'CLCN7：溶酶体 Cl⁻/H⁺ 交换体，另一个“慢漏”候选，但 KO 后 pH 正常；VRAC/LRRC8A：容积调节阴离子通道，DCPIB 的原始靶点；TPC1/2：PI(3,5)P₂ 激活的溶酶体阳离子通道；TRPML1：溶酶体 Ca²⁺ 通道；OTOP1 与 H_V1：两种已知质子通道（质膜），本文用作 P_H/P_X 的对照。',
+ p:'Cell 2022 p2292–2294、p2304',g:['通道','对照']},
+{c:'术语',t:'HA tag / LAMP1 / EEA1',s:'定位三件套。',
+ d:'HA 是流感血凝素表位标签，用来在没有好抗体时检测蛋白（本文做 HA 敲入）；LAMP1 是溶酶体标志；EEA1 是早期内体标志。TMEM175 与 LAMP1 大量共定位、与 EEA1 部分共定位、与 MitoTracker 不共定位——这三条合起来才叫“定位证据”。',
+ p:'Cell 2022 p2294、Fig S2D',g:['定位','抗体']},
+{c:'术语',t:'KO / KI / OE / CRISPR-Cas9',s:'四个遗传学操作的准确含义。',
+ d:'KO 敲除（电流消失），KI 敲入（把突变放回内源位点，本文 HA 标签与 M393T 都用它），OE 过表达（常导致溶酶体通道“跑”到质膜）。CRISPR-Cas9 是造 KO/KI 的工具。关键：过表达体系里测到的性质，未必等于内源通道的性质。',
+ p:'Cell 2022 p2294、Fig S6',g:['遗传学','方法']},
+{c:'术语',t:'GWAS / PD / AD / LSD',s:'四个疾病与遗传学缩写。',
+ d:'GWAS 全基因组关联分析（找风险变异，不给机制）；PD 帕金森病；AD 阿尔茨海默病；LSD 溶酶体贮积病。本文的逻辑链：GWAS 找到 TMEM175 变异 → KI 细胞内源表达下电流减半（丰度缺陷）→ KO 小鼠过酸化 → α-syn 聚集。每一步的扰动强度都不同，不能一句“致病基因”带过。',
+ p:'Cell 2022 p2303',g:['疾病','遗传']},
+{c:'术语',t:'set-point pH（设定点）',s:'泵入与外排速率相等时的腔内 pH。',
+ d:'不是一个固定常数，而是两条速率曲线的交点：V-ATPase 泵入随腔内变酸而减速，TMEM175 外排随腔内变酸而加速。由此可得两条可检验预测：通道表达/活性升高 → 设定点碱移（溶酶体偏碱）；通道缺失 → 设定点酸移（过酸化）。',
+ p:'Cell 2022 p2303–2304、Fig 7I',g:['概念','模型']},
+{c:'术语',t:'Cohen’s d / SEM / n',s:'读统计图先看这三个。',
+ d:'Cohen’s d 是效应量：d<0.25 无效应、0.25–0.5 小、0.5–0.75 中、>0.75 大。本文 KO 与 WT 的 pH 差 d≈0.87（大效应），但 1 nM Baf-A1 归一化后只剩 d≈0.35（小效应）。SEM 是均值标准误（误差棒）；n 是样本数——Fig 1C 的 pH 3.5 组只有 7 颗，读结论时要打折扣。',
+ p:'Cell 2022 e9',g:['统计','判读']},
+
+/* ---------- 修正（第一篇综述 → 第二篇原始研究） ---------- */
+{c:'修正',t:'修正1｜选择性：K⁺ → H⁺ 主导',s:'不是“错”，是“条件不同”。',
+ d:'2019 综述：TMEM175 为 K⁺ 选择性（PK/PNa>30），靠 FSD 基序。2022：生理 pH 4.5–5.0 下 PH/PK≈4.8×10⁴，PH/PNa 与 PH/P-NMDG >2×10⁵，天然条件下 >90% 电流由 H⁺ 承载（Fig 2I、S3J）。原因：早期实验把腔内 pH 设在 7.0 以上，对溶酶体属非生理条件。笔记写法：加“pH>7 时为 K⁺ 通道”这一条件限定，不要直接删旧条目。',
+ p:'Cell 2022 p2294–2296、p2304',g:['2022修正','选择性']},
+{c:'修正',t:'修正2｜组成性漏 → 门控通道',s:'基础活性极低，需质子或脂质开门。',
+ d:'2019：组成性背景 K⁺ 电导，维持静息 ΔΨ。2022：通道被腔侧质子门控，DCPIB/ArA/ML 67-33 可激活，幅度 >100 倍，说明它是“门控”而非“常开”。证据：反向梯度（ΔpH=+2.6）无电流、对称 pH（ΔpH=0）有大电流且 Erev≈0（Fig 4A–B）。这也解释了 31/128 的稀疏性。',
+ p:'Cell 2022 p2297–2299',g:['2022修正','门控']},
+{c:'修正',t:'修正3｜K⁺ 反离子模型被方向性证据否定',s:'KO 是过酸化，不是碱化。',
+ d:'旧模型：TMEM175 出 K⁺，为 V-ATPase 持续泵入 H⁺ 提供反离子。若成立，KO 应当碱化、过表达应当酸化。实测相反：KO 过酸化约 0.3（HeLa）到 0.4（神经元）个 pH 单位，过表达偏碱（Fig 6C、S7H–I）。加上“K⁺ 梯度本身指向腔内”这一电化学事实，反离子模型不成立。注意：这只排除了“K⁺ 是主要机制”，未证明“K⁺ 完全无用”。',
+ p:'Cell 2022 p2300–2304',g:['2022修正','机制']},
+{c:'修正',t:'修正4｜H⁺ 漏身份：未知 → LyPAP',s:'综述留的空白被填上了。',
+ d:'2019 综述 Outstanding Questions 明写“H⁺ 漏电导的分子身份未知”（p122）；同时领域里有 Pitt 2014（TPC1）、Soyombo 2006（TRPML1）的质子通透假说（注意：这是那两篇的主张，不是综述的主张）。2022：表达筛选唯一命中 TMEM175，三系 KO 电流消失、回补恢复；TPC1/2 DKO 与 TRPML1 KO 中电流不变（Fig 1D–G、S2B–C），两假说被否定。',
+ p:'Cell 2022 p2293–2294、p2304',g:['2022修正','身份']},
+{c:'修正',t:'修正5｜p.M393T 是“丰度缺陷”不是“功能缺陷”',s:'过表达测不出，内源才显形。',
+ d:'过表达时 M393T 的 H⁺/K⁺ 通透性毫无变化（Fig S6F–G）；但在内源启动子驱动的 KI 细胞里 I_LyPAP 减半（Fig S6J–K）。结论：它影响转运/膜上丰度，不是通道本身坏了。方法学教训：功能化遗传变异必须在**内源调控**下做，否则会误判为“无功能后果”。',
+ p:'Cell 2022 p2299、Fig S6',g:['2022修正','遗传']},
+{c:'图形',t:'图4｜反向梯度证明“门控”',s:'驱动力更大时没电流，驱动力为零时反而大开。',
+ d:'pHC 固定 4.6：pHE 先给 7.2（ΔpH=+2.6，方向与溶酶体相反）→ 几乎无电流；切到 pHE 4.6（ΔpH=0）→ 出现 ±1000 pA 级双向电流、Erev≈0；切回 7.2 → 缓慢失活。逻辑：若只是“驱动力变大”，ΔpH 更大那次应该电流更大；实测相反，故只能是“腔侧必须酸才开门”。这是全文最干净的一个实验设计。',
+ p:'Cell 2022 p2299、Fig 4A–B',g:['图形','门控','设计']},
+{c:'图形',t:'图7I｜双速率模型',s:'两条曲线相交处就是 pH 4.6。',
+ d:'蓝线 TMEM175 活性随腔内变酸而上升；橙线 V-ATPase 活性随腔内变酸而下降；交点即设定点（约 4.6）。曲线左侧（更酸）通道占优 → 往外排；右侧（更碱）泵占优 → 往内泵。改变任一方的表达/活性，交点就移动，这就是“设定点可调”的图形表达。注意：两条速率曲线是示意图，未实测。',
+ p:'Cell 2022 p2303',g:['图形','模型']}
+];
+
+/* ---------- 状态 ---------- */
+function load(){
+  try{
+    const raw=JSON.parse(localStorage.getItem(KEY));
+    if(raw && typeof raw==='object') return {custom:raw.custom||[], prog:raw.prog||{}};
+  }catch(e){}
+  return {custom:[], prog:{}};
+}
+let S=load();
+let mode='browse', cat='全部', kw='', queue=[], qi=0, revealed=false;
+
+function save(){ try{ localStorage.setItem(KEY,JSON.stringify(S)); }catch(e){} }
+function all(){ return SEED.concat(S.custom); }
+function P(id){ return S.prog[id]||{box:0,due:null,n:0}; }
+function today(){ const d=new Date(); d.setHours(0,0,0,0); return d.getTime(); }
+function dayStr(ts){ const d=new Date(ts); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+function idOf(c){ return c.t; }
+
+function toast(msg){
+  const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('on');
+  clearTimeout(t._t); t._t=setTimeout(()=>t.classList.remove('on'),1800);
+}
+
+/* ---------- 渲染 ---------- */
+const view=document.getElementById('view');
+const chips=document.getElementById('chips');
+const qEl=document.getElementById('q');
+
+function renderChips(){
+  const cs=['全部'].concat(Array.from(new Set(all().map(c=>c.c||'未分类'))));
+  chips.innerHTML=cs.map(c=>
+    '<button class="chip'+(c===cat?' on':'')+'" data-cat="'+c+'">'+c+'</button>'
+  ).join('');
+}
+function matches(c){
+  if(cat!=='全部' && c.c!==cat) return false;
+  if(!kw) return true;
+  const hay=(c.t+' '+c.s+' '+(c.d||'')+' '+(c.g||[]).join(' ')+' '+(c.p||'')).toLowerCase();
+  return hay.indexOf(kw)>=0;
+}
+function renderBrowse(){
+  const list=all().filter(matches);
+  document.getElementById('count').textContent='共 '+all().length+' 张 · 显示 '+list.length;
+  if(!list.length){ view.innerHTML='<div class="empty">没有匹配的卡片，换个词试试。</div>'; return; }
+  view.innerHTML='<div class="grid">'+list.map(c=>{
+    const p=P(idOf(c)), box=p.box;
+    return '<div class="card" data-id="'+esc(idOf(c))+'">'
+      +'<div class="card-top"><div class="term">'+esc(c.t)+'</div><span class="badge">'+esc(c.c)+'</span></div>'
+      +'<div class="short">'+esc(c.s)+'</div>'
+      +'<div class="detail">'+esc(c.d||'')+'</div>'
+      +'<div class="card-foot">'
+        +'<button class="toggle">展开</button>'
+        +'<span class="lv">'+(box?('已复习 '+box+' 级'):'未复习')+'</span>'
+        +(S.custom.some(x=>x.t===c.t)?'<button class="del">删除</button>':'')
+        +'<span class="src">'+esc(c.p||'')+'</span>'
+      +'</div></div>';
+  }).join('')+'</div>';
+}
+function esc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+/* ---------- 复习 ---------- */
+function buildQueue(){
+  const t=today();
+  let list=all().filter(c=>{
+    const p=P(idOf(c));
+    if(!p.due) return true;
+    return Date.parse(p.due)<=t;
+  });
+  list.sort((a,b)=>{
+    const pa=P(idOf(a)), pb=P(idOf(b));
+    if(pa.box!==pb.box) return pa.box-pb.box;
+    return (Date.parse(pa.due||'1970-01-01')||0)-(Date.parse(pb.due||'1970-01-01')||0);
+  });
+  queue=list; qi=0; revealed=false;
+  if(!queue.length) return;
+  if(queue.length>25) queue=queue.slice(0,25);
+}
+function renderReview(){
+  if(!queue.length && qi===0){ buildQueue(); }
+  document.getElementById('count').textContent='待复习 '+queue.length+' 张';
+  if(!queue.length){
+    view.innerHTML='<div class="review-wrap"><div class="flash"><div class="q">今天的卡片都复习完了</div>'
+      +'<div class="a" style="display:block"><p>可以去「浏览」里继续看，或去「新增」补充自己的卡片。</p>'
+      +'<p class="dd">下次到期的卡片会自动出现在这里。</p></div></div></div>';
+    return;
+  }
+  const c=queue[qi], p=P(idOf(c));
+  view.innerHTML='<div class="review-wrap">'
+    +'<div class="progress"><span>'+(qi+1)+' / '+queue.length+'</span><span>'+esc(c.c)+' · '+esc(c.p||'')+'</span></div>'
+    +'<div class="flash'+(revealed?' revealed':'')+'" id="flash">'
+      +'<div class="q">'+esc(c.t)+'<small>先自己回忆：它是什么？做什么用？</small></div>'
+      +'<div class="a">'
+        +'<p>'+esc(c.s)+'</p>'
+        +'<p class="dd">'+esc(c.d||'')+'</p>'
+        +'<p class="pp">'+esc((c.g||[]).join(' · '))+'</p>'
+      +'</div>'
+      +(revealed
+        ? '<div class="acts"><button class="btn g1" data-g="1">忘记了 (1)</button>'
+          +'<button class="btn g2" data-g="2">模糊 (2)</button>'
+          +'<button class="btn g3" data-g="3">记得 (3)</button></div>'
+        : '<div class="acts"><button class="btn primary" id="showBtn">显示答案（空格）</button></div>')
+      +'</div>'
+    +'<div class="hintline">间隔规则：忘记=1 天，模糊=保持当前层级，记得=升一级（1/2/4/7/15 天）</div>'
+  +'</div>';
+}
+
+function grade(g){
+  const c=queue[qi]; if(!c) return;
+  const id=idOf(c); const p=P(id); p.n=(p.n||0)+1;
+  if(g===3) p.box=Math.min(5,p.box+1);
+  else if(g===2) p.box=Math.max(1,p.box);
+  else p.box=1;
+  const days=IV[p.box-1]||1;
+  p.due=dayStr(today()+days*86400000);
+  S.prog[id]=p; save();
+  revealed=false; qi++;
+  if(qi>=queue.length){ queue=[]; qi=0; renderReview(); toast('本轮复习完成，已记录排期'); }
+  else renderReview();
+}
+
+/* ---------- 新增 ---------- */
+function renderAdd(){
+  document.getElementById('count').textContent='';
+  view.innerHTML='<div class="form">'
+    +'<div><label>术语 / 问题（复习时作为正面）</label><input type="text" id="f-t" placeholder="例如：LysoKVCa 的正反馈"></div>'
+    +'<div><label>一句话释义（复习时作为第一层答案）</label><input type="text" id="f-s" placeholder="例如：超极化→增大 Ca²⁺ 驱动力→更多 Ca²⁺→通道更开"></div>'
+    +'<div class="row2"><div><label>分类（可自定义）</label><input type="text" id="f-c" list="catList" value="概念">'
+    +'<datalist id="catList">'+Array.from(new Set(all().map(c=>c.c||'未分类'))).map(c=>'<option>'+esc(c)+'</option>').join('')+'</datalist></div>'
+    +'<div><label>来源 / 页码</label><input type="text" id="f-p" placeholder="p121 或 我的笔记"></div></div>'
+    +'<div><label>细节（可选，第二层答案）</label><textarea id="f-d" placeholder="机制、条件、易混点、反例…"></textarea></div>'
+    +'<div><label>标签（逗号分隔，可选）</label><input type="text" id="f-g" placeholder="K通道, 正反馈"></div>'
+    +'<div class="acts"><button class="btn primary" id="saveCard">保存卡片</button></div>'
+    +'<div class="hintline">卡片保存在本机浏览器里，换设备或清理浏览器数据前请到「数据」导出备份。</div>'
+    +'</div>';
+}
+
+/* ---------- 数据 ---------- */
+function renderData(){
+  const tot=all().length, cust=S.custom.length;
+  const due=all().filter(c=>!P(idOf(c)).due||Date.parse(P(idOf(c)).due)<=today()).length;
+  const mast=all().filter(c=>P(idOf(c)).box>=4).length;
+  document.getElementById('count').textContent='';
+  view.innerHTML='<div class="data">'
+    +'<div class="panel"><div class="stats">'
+      +'<div class="stat"><b>'+tot+'</b><span>卡片总数</span></div>'
+      +'<div class="stat"><b>'+cust+'</b><span>自己新增</span></div>'
+      +'<div class="stat"><b>'+due+'</b><span>今日待复习</span></div>'
+      +'<div class="stat"><b>'+mast+'</b><span>已掌握（4 级以上）</span></div>'
+    +'</div></div>'
+    +'<div class="panel"><h3>导出备份</h3><p>下载一个 JSON 文件，包含你自己新增的卡片与全部复习进度。</p>'
+      +'<button class="btn" id="expBtn">导出 JSON</button></div>'
+    +'<div class="panel"><h3>导入 / 恢复</h3><p>选择之前导出的 JSON；自己新增的卡片会与进度合并，内置卡片不变。</p>'
+      +'<input type="file" id="impFile" accept="application/json,.json"></div>'
+    +'<div class="panel"><h3>重置</h3><p>只清空复习进度，不动卡片。</p>'
+      +'<button class="btn" id="resetBtn">重置复习进度</button></div>'
+    +'</div>';
+}
+
+function render(){
+  document.querySelectorAll('.mode').forEach(b=>b.classList.toggle('on',b.dataset.mode===mode));
+  document.getElementById('tools').style.display = (mode==='browse')?'flex':'none';
+  if(mode==='browse'){ renderChips(); renderBrowse(); }
+  else if(mode==='review'){ renderReview(); }
+  else if(mode==='add'){ renderAdd(); }
+  else { renderData(); }
+}
+
+/* ---------- 事件 ---------- */
+document.querySelectorAll('.mode').forEach(b=>{
+  b.onclick=()=>{ mode=b.dataset.mode; if(mode==='review'){ queue=[]; qi=0; revealed=false; } render(); };
+});
+chips.addEventListener('click',e=>{
+  const b=e.target.closest('.chip'); if(!b) return;
+  cat=b.dataset.cat; renderChips(); renderBrowse();
+});
+qEl.addEventListener('input',()=>{ kw=qEl.value.trim().toLowerCase(); renderBrowse(); });
+
+view.addEventListener('click',e=>{
+  const card=e.target.closest('.card');
+  if(card){
+    if(e.target.closest('.toggle')){
+      card.classList.toggle('open');
+      e.target.closest('.toggle').textContent=card.classList.contains('open')?'收起':'展开';
+      return;
+    }
+    if(e.target.closest('.del')){
+      const id=card.dataset.id;
+      if(confirm('删除这张自己新增的卡片？')){
+        S.custom=S.custom.filter(x=>x.t!==id); delete S.prog[id]; save(); renderBrowse(); toast('已删除');
+      }
+      return;
+    }
+    card.classList.toggle('open');
+    const t=card.querySelector('.toggle');
+    if(t) t.textContent=card.classList.contains('open')?'收起':'展开';
+    return;
+  }
+  if(e.target.id==='showBtn'){ revealed=true; renderReview(); return; }
+  const g=e.target.closest('[data-g]');
+  if(g){ grade(Number(g.dataset.g)); return; }
+  if(e.target.id==='saveCard'){
+    const t=document.getElementById('f-t').value.trim();
+    const s=document.getElementById('f-s').value.trim();
+    if(!t||!s){ toast('术语和释义都要填'); return; }
+    if(all().some(x=>x.t===t)){ toast('已有同名卡片'); return; }
+    S.custom.push({
+      c:document.getElementById('f-c').value,
+      t:t, s:s,
+      d:document.getElementById('f-d').value.trim(),
+      p:document.getElementById('f-p').value.trim(),
+      g:document.getElementById('f-g').value.split(/[,，]/).map(x=>x.trim()).filter(Boolean)
+    });
+    save(); toast('已保存'); mode='browse'; render();
+    return;
+  }
+  if(e.target.id==='expBtn'){
+    const blob=new Blob([JSON.stringify(S,null,2)],{type:'application/json'});
+    const a=document.createElement('a'); a.href=URL.createObjectURL(blob);
+    a.download='lyso-kb-'+dayStr(Date.now())+'.json'; a.click();
+    setTimeout(()=>URL.revokeObjectURL(a.href),2000);
+    toast('已导出');
+    return;
+  }
+  if(e.target.id==='resetBtn'){
+    if(confirm('清空全部复习进度？卡片不会删除。')){ S.prog={}; save(); render(); toast('进度已重置'); }
+    return;
+  }
+});
+view.addEventListener('change',e=>{
+  if(e.target.id!=='impFile') return;
+  const f=e.target.files[0]; if(!f) return;
+  const r=new FileReader();
+  r.onload=()=>{
+    try{
+      const d=JSON.parse(r.result);
+      if(d.custom && Array.isArray(d.custom)){
+        const have=S.custom.map(x=>x.t);
+        d.custom.forEach(c=>{ if(!have.includes(c.t)) S.custom.push(c); });
+      }
+      if(d.prog && typeof d.prog==='object') Object.assign(S.prog,d.prog);
+      save(); render(); toast('已导入');
+    }catch(err){ toast('文件格式不对'); }
+  };
+  r.readAsText(f,'utf-8');
+});
+
+document.addEventListener('keydown',e=>{
+  if(mode!=='review') return;
+  if(document.activeElement && /INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName)) return;
+  if(e.code==='Space'){ e.preventDefault(); if(!revealed){ revealed=true; renderReview(); } return; }
+  if(revealed && ['1','2','3'].includes(e.key)){ grade(Number(e.key)); }
+});
+
+render();
+</script>
+</body>
+</html>
