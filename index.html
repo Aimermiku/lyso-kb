@@ -24,6 +24,9 @@
   .head-row{display:flex; align-items:center; gap:16px; flex-wrap:wrap}
   h1{font-size:19px; margin:0; font-weight:600; letter-spacing:.2px}
   .sub{color:var(--dim); font-size:12.5px}
+  .sub a{color:var(--accent); text-decoration:none; border-bottom:1px dotted rgba(127,209,255,.5)}
+  .sub a:hover{border-bottom-color:var(--accent)}
+  .sub .online{white-space:nowrap}
   .modes{display:flex; gap:6px; margin-left:auto}
   .mode{
     border:1px solid var(--line); background:transparent; color:var(--dim);
@@ -124,6 +127,7 @@
     <div>
       <h1>溶酶体离子通道 · 复习知识库</h1>
       <div class="sub">内置两篇：Li, Gu &amp; Xu, <i>TiBS</i> 2019 + Hu, Li 等, <i>Cell</i> 2022 的 63 张卡片（含术语与 2022 修正）· 可继续添加自己的主题 · 本地存储，离线可用</div>
+      <div class="sub" style="margin-top:2px">固定网址 <span class="online"><a href="https://aimermiku.github.io/lyso-kb/" target="_blank" rel="noopener">aimermiku.github.io/lyso-kb</a></span> · 手机加书签即可 · 进度不随网址同步，换设备请用「数据」页导出/导入</div>
     </div>
     <div class="modes">
       <button class="mode on" data-mode="browse">浏览</button>
